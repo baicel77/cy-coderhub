@@ -1,0 +1,17 @@
+const KoaRouter = require('@koa/router')
+const { create, query, detail, update, remove } = require('../controller/moment.controller')
+const { verityAuth } = require('../middleware/login.middleware')
+const { verifyPermission } = require('../middleware/permission.middleware')
+const momentRouter = new KoaRouter({ prefix: '/moment' })
+// 1.发表动态(增)
+momentRouter.post('/', verityAuth, create)
+// 2.查询动态列表(查)
+momentRouter.get('/', query)
+// 3.查询动态详情(查)
+momentRouter.get('/:momentId', detail)
+// 4.修改动态(改)
+momentRouter.patch('/:momentId', verityAuth, verifyPermission, update)
+// 4.删除动态(改)
+momentRouter.delete('/:momentId', verityAuth, verifyPermission, remove)
+
+module.exports = momentRouter
