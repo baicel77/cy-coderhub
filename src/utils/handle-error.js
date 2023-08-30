@@ -1,5 +1,5 @@
 const app = require('../app')
-const { USER_NAME_OR_PASSWORD_IS_NULL, USER_NAME_ALREADY_EXISTS, USER_IS_NOT_EXISTS, PASSWORD_IS_INCORRECT, USER_IS_UNAUTHORIZATION, NOPERMISSION } = require('../config/error')
+const { USER_NAME_OR_PASSWORD_IS_NULL, USER_NAME_ALREADY_EXISTS, USER_IS_NOT_EXISTS, PASSWORD_IS_INCORRECT, USER_IS_UNAUTHORIZATION, NOPERMISSION, LABEL_IS_EXISTS, CANT_FIND_AVATAR } = require('../config/error')
 
 app.on('error', (error, ctx) => {
   let code = 0
@@ -28,6 +28,14 @@ app.on('error', (error, ctx) => {
     case NOPERMISSION:
       code = -2001
       message = '没有操作该资源的权限'
+      break;
+    case LABEL_IS_EXISTS:
+      code = -2002
+      message = '标签已经存在'
+      break;
+    case CANT_FIND_AVATAR:
+      code = -2003
+      message = '找不到头像, 请检查用户id'
       break;
   }
   ctx.body = {

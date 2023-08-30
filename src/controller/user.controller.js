@@ -1,4 +1,8 @@
+const fs = require('fs')
 const userService = require("../service/user.service")
+const { getAvatarInfo } = require('../service/file.service')
+const { UPLOAD_PATH } = require('../config/path')
+const { CANT_FIND_AVATAR } = require('../config/error')
 
 class UserController {
   async create(ctx) {
@@ -10,6 +14,18 @@ class UserController {
     ctx.body = {
       message: '创建用户成功',
       data: result
+    }
+  }
+  async getAvatarById(ctx) {
+    const { id } = ctx.params
+    const data = await getAvatarInfo(id)
+    if (data.length) {
+      const { mimetype, filename } = data.pop()
+      const readStream = fs.createReadStream(`${UPLOAD_PATH}/${filename}`)
+      ctx.type = mimetype
+      ctx.body = readStream
+    } else {
+      return ctx.app.emit('error', CANT_FIND_AVATAR, ctx)
     }
   }
 }

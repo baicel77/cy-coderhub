@@ -28,7 +28,6 @@ class momentController {
       data: data[0] || {}
     }
   }
-
   async update(ctx, next) {
     const { momentId } = ctx.params
     const { content } = ctx.request.body
@@ -39,7 +38,6 @@ class momentController {
       data
     }
   }
-
   async remove(ctx, next) {
     const { momentId } = ctx.params
     const data = await momentService.remove(momentId)
@@ -49,7 +47,24 @@ class momentController {
       data
     }
   }
-
+  async addLabel(ctx, next) {
+    try {
+      const { momentId } = ctx.params
+      const { id } = ctx.user
+      for (const item of ctx.labels) {
+        const value = await momentService.checkExistsLabel(momentId, item.id, id)
+        if (!value) {
+          await momentService.addLabel(momentId, item.id, id)
+        }
+      }
+      ctx.body = {
+        code: 0,
+        message: '为动态添加标签成功',
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = new momentController()
